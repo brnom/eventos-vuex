@@ -1,6 +1,6 @@
 <template>
     <div id="nav" class="nav">
-        <router-link to="/" class="brand">Brubs Events</router-link>
+        <router-link to="/" class="brand">Vuex Events</router-link>
         <nav>
             <router-link :to="{ name: 'event-list' }">Listar</router-link> |
             <router-link :to="{ name: 'event-create' }">Criar</router-link>
