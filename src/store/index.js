@@ -17,7 +17,8 @@ export default new Vuex.Store({
             'coletivo'
         ],
         events: [],
-        eventsNum: 0
+        eventsNum: 0,
+        event: {}
     },
     mutations: {
         ADD_EVENT(state, event) {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
         },
         SET_NUM(state, num) {
             state.eventsNum = num
+        },
+        SET_EVENT(state, event){
+            state.event = event
         }
     },
     actions: {
@@ -46,6 +50,22 @@ export default new Vuex.Store({
             .catch(error => {
                 console.log('Deu ruim:', error.response)
             })
+        },
+        fetchEvent({ commit, getters }, id) {
+            var event = getters.eventoPorId(id)
+            if(event){
+                commit('SET_EVENT', event)
+            }
+            else{
+                EventService.getEvent(id)
+                .then(response => {
+                    commit('SET_EVENT', response.data)
+                    //this.event = response.data
+                })
+                .catch(error => {
+                    console.log('Deu ruim:', error.response)
+                })
+            }
         }
     },
     getters: {
