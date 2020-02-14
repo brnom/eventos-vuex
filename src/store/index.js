@@ -16,7 +16,8 @@ export default new Vuex.Store({
             'brisa',
             'coletivo'
         ],
-        events: []
+        events: [],
+        eventsNum: 0
     },
     mutations: {
         ADD_EVENT(state, event) {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
         },
         SET_EVENTS(state, events) {
             state.events = events
+        },
+        SET_NUM(state, num) {
+            state.eventsNum = num
         }
     },
     actions: {
@@ -32,10 +36,12 @@ export default new Vuex.Store({
                 commit('ADD_EVENT', event)
             })
         },
-        fetchEvents({ commit }) {
-            EventService.getEvents()
+        fetchEvents({ commit }, {porPag, pag}) {
+            EventService.getEvents(porPag, pag)
             .then(response => {
-                commit('SET_EVENTS', response.data) // <--- set the events data
+                // console.log('totEventos: ' + response.headers['x-total-count']) //malandramente!
+                commit('SET_EVENTS', response.data)
+                commit('SET_NUM', response.headers['x-total-count'])
             })
             .catch(error => {
                 console.log('Deu ruim:', error.response)
@@ -44,7 +50,10 @@ export default new Vuex.Store({
     },
     getters: {
         eventoPorId: state => id => {
-            return state.eventus.find(evento => evento.id===id)
+            return state.events.find(evento => evento.id===id)
+        },
+        nEventos: state => {
+            return state.eventsNum
         }
     },
     modules: {}
