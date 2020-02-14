@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>Lista de Eventos :]</h1>
-        <EventCard v-for="event in events" :key="event.id" :event="event"/>
+        <h1>Eventos pro {{ user.user.name }} :]</h1>
+        <EventCard v-for="event in event.events" :key="event.id" :event="event"/>
         <template v-if="page != 1">
             <router-link :to="{ name: 'event-list', query: { page: page-1 } }" rel="prev">
                 prev page</router-link>
@@ -16,7 +16,7 @@
 
 <script>
 import EventCard from '@/components/EventCard.vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 export default {
     components: {
         EventCard
@@ -32,10 +32,9 @@ export default {
             return parseInt(this.$route.query.page) || 1 //se n tiver parametros na url, assume que é a 1ª hehe
         },
         notFinalPage() {
-            return this.nEventos > this.page*3 //fiz mor gambiarra e era tao simples kkk
+            return this.event.eventsNum > this.page*3 //fiz mor gambiarra e era tao simples kkk
         },
-        ...mapState(['events']),
-        ...mapGetters(['nEventos'])
+        ...mapState(['event', 'user'])
     }
 }
 </script>
