@@ -24,12 +24,24 @@ export const mutations = {
 }
 
 export const actions = {
-    createEvent({ commit }, event) {
+    createEvent({ commit, dispatch }, event) {
         return EventService.postEvent(event).then(() => {
             commit('ADD_EVENT', event)
+            const notification = {
+                type: 'success',
+                message: 'evento criado :)' 
+            }
+            dispatch('notification/add', notification, { root: true })
+        }).catch(error => {
+            const notification = {
+                type: 'error',
+                message: 'erro criando seu evento: ' + error.message
+            }
+            dispatch('notification/add', notification, { root: true })
+            throw error
         })
     },
-    fetchEvents({ commit }, {porPag, pag}) {
+    fetchEvents({ commit, dispatch }, {porPag, pag}) {
         EventService.getEvents(porPag, pag)
         .then(response => {
             // console.log('totEventos: ' + response.headers['x-total-count']) //malandramente!
@@ -37,10 +49,15 @@ export const actions = {
             commit('SET_NUM', response.headers['x-total-count'])
         })
         .catch(error => {
-            console.log('Deu ruim:', error.response)
+            // console.log('Deu ruim:', error.response)
+            const notification = {
+                type: 'error',
+                message: 'erro buscando os eventos: ' + error.message
+            }
+            dispatch('notification/add', notification, { root: true })
         })
     },
-    fetchEvent({ commit, getters }, id) {
+    fetchEvent({ commit, getters, dispatch }, id) {
         var event = getters.eventoPorId(id)
         if(event){ //evita que faça outra chamada de API, caso evento ja esteja carregado
             commit('SET_EVENT', event)
@@ -52,7 +69,12 @@ export const actions = {
                 //this.event = response.data
             })
             .catch(error => {
-                console.log('Deu ruim:', error.response)
+                // console.log('Deu ruim:', error.response)
+                const notification = {
+                    type: 'error', 
+                    message: 'erro buscando o evento: ' + error.message
+                }
+                dispatch('notification/add', notification, { root: true })
             })
         }
     }
