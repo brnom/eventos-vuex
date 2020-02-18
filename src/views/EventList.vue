@@ -22,7 +22,7 @@ export default {
         EventCard
     },
     created() {
-        this.$store.dispatch('fetchEvents', {
+        this.$store.dispatch('event/fetchEvents', {
             porPag: 3,
             pag: this.page
         })
